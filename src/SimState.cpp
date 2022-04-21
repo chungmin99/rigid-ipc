@@ -337,6 +337,13 @@ void SimState::run_simulation(const std::string& fout)
     for (int i = 0; i < m_max_simulation_steps; ++i) {
         simulation_step();
         save_simulation_step();
+
+        // check if simulation step failed; if so, kill process early
+        if (!problem_ptr->opt_result.success) {
+            spdlog::error("Simulation optimization failed!");
+            break;
+        }
+
         spdlog::info(
             "Finished it={} sim_step={}", i + 1, m_num_simulation_steps);
 
